@@ -2,7 +2,7 @@
 
 import unittest
 
-from python_list import SampleList
+from datastructures.python_list import SampleList
 
 class SampleListTest(unittest.TestCase):
 

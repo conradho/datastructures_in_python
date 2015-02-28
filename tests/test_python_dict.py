@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import patch
 
-from python_dict import (
+from datastructures.python_dict import (
     SampleDict,
     KeyAlreadyExistsInDictError,
     KeyDoesNotExistInDictError,
