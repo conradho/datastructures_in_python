@@ -39,8 +39,8 @@ def insert_items_into_normal_dict():
             assign(key, i)
 
 def main():
-    insert_items_into_sample_dict()
-    ## insert_items_into_normal_dict()
+    ## insert_items_into_sample_dict()
+    insert_items_into_normal_dict()
 
 if __name__ == '__main__':
     main()
