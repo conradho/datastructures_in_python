@@ -78,7 +78,7 @@ class SampleDict(object):
             if not pointer:
                 return position
             if pointer.contents.key == key:
-                raise KeyAlreadyExistsInDictError
+                raise KeyAlreadyExistsInDictError('({}, {})'.format(key, pointer.contents.value))
         raise DictIsFullError
 
     def find_position_of_inserted_key(self, key):
