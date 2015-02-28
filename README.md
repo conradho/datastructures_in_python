@@ -5,7 +5,8 @@ Testing
 
 Profiling
 =========
-- run `./run_profiling your_profiling_script.py` to get function level profiling
+- run `./run_profiling <your-profiling-scripts>` to get function level profiling
+	- for example, could do `./run_profiling profiling/*dict.py` to take advantage of shell expansion
 - Nota Bene: need to monitor system cpu, memory, network load etc while profiling to make sure nothing else is interfering
 - have your own hypothesis before profiling
 - notes for what we've tried:
