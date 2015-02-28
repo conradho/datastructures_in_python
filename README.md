@@ -10,9 +10,9 @@ Profiling
 - just `print(time.time())`
 	- can wrap functions in decorators with print statements before and after
 - on command line:
-	- `python -m timeit -s "import your_module" "your_module.call_function()"`
-	- `/usr/bin/time --verbose python your_code.py`   <-- don't confuse this with bash/shell time
+	- `python3.4 -m timeit -s "import your_module" "your_module.call_function()"`
+	- `/usr/bin/time --verbose python3.4 your_code.py`   <-- don't confuse this with bash/shell time
 		- page faults == having to load data from disk because it got pushed out of RAM
-	- `python -m cProfile -s cumulative your_code.py`
+	- `python3.4 -m cProfile -s cumulative your_code.py`
 		- note how much overhead cProfile creates
 		- see if the # of times each function was called is what you estimated
