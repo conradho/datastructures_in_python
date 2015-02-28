@@ -41,37 +41,53 @@ class SampleDict(object):
     def _hash(value):
         return hash(value)
 
-    def _compute_index_position(self, key):
-        return self._hash(key) & (self.allocated_length - 1)
+    def _get_position_generator(self, key):
+        j = self._hash(key)
+        perturb = j
+        mask = self.allocated_length - 1
+        for _ in range(self.allocated_length):
+            yield j & mask  # modulo the allocated_length
+            j = 5 * j + 1 + perturb
+            perturb >>= 5  # right shift by 2^5
 
     def insert(self, key, value):
-        item_ptr = ctypes.pointer(DictItem(key, value))
-        position = self._compute_index_position(key)
-        pointer = self.c_dict_array[position]
         if float(self.fill) / self.allocated_length > 0.667:
             self._resize()
-        for _ in range(self.allocated_length):
-            if not pointer:
-                # pointer is null, we have blank space!
-                self.c_dict_array[position] = item_ptr
-                self.fill += 1
-                return
-            if pointer.contents.key == key:
-                raise KeyAlreadyExistsInDictError
-            # use open addressing to get next position
-            position = (position + 1) % self.allocated_length
-            pointer = self.c_dict_array[position]
-        raise DictIsFullError
+        new_item_pointer = ctypes.pointer(DictItem(key, value))
+        position = self.find_blank_position(key)
+        self.c_dict_array[position] = new_item_pointer
+        self.fill += 1
 
     def get_value(self, key):
-        position = self._compute_index_position(key)
-        pointer = self.c_dict_array[position]
+        position = self.find_position_of_inserted_key(key)
+        return self.c_dict_array[position].contents.value
+
+    def pop(self, key):
+        position = self.find_position_of_inserted_key(key)
+        value = self.c_dict_array[position].contents.value
+        null_pointer = ctypes.POINTER(DictItem)()
+        self.c_dict_array[position] = null_pointer
+        self.fill -= 1
+        return value
+
+    def find_blank_position(self, key):
+        position_generator = self._get_position_generator(key)
         for _ in range(self.allocated_length):
+            position = next(position_generator)
+            pointer = self.c_dict_array[position]
+            if not pointer:
+                return position
+            if pointer.contents.key == key:
+                raise KeyAlreadyExistsInDictError
+        raise DictIsFullError
+
+    def find_position_of_inserted_key(self, key):
+        position_generator = self._get_position_generator(key)
+        for _ in range(self.allocated_length):
+            position = next(position_generator)
+            pointer = self.c_dict_array[position]
             if not pointer:
                 raise KeyDoesNotExistInDictError
             if pointer.contents.key == key:
-                return pointer.contents.value
-            position = (position + 1) % self.allocated_length
-            pointer = self.c_dict_array[position]
+                return position
         raise KeyDoesNotExistInDictError
-
