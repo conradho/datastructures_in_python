@@ -23,7 +23,7 @@ if __name__ == '__main__':
             shell=True
         )
 
-        for line in output.decode('UTF-8').split('\n')[:15]:
+        for line in output.decode('UTF-8').split('\n')[:20]:
             print(line)
-        print('...')
+        print('*' * 80)
 

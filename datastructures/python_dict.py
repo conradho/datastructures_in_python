@@ -47,7 +47,7 @@ class SampleDict(object):
         mask = self.allocated_length - 1
         for _ in range(self.allocated_length):
             yield j & mask  # modulo the allocated_length
-            j = 5 * j + 1 + perturb
+            j = ((j << 2 ) + j + perturb + 1)
             perturb >>= 5  # right shift by 2^5
 
     def insert(self, key, value):
@@ -79,7 +79,7 @@ class SampleDict(object):
                 return position
             if pointer.contents.key == key:
                 raise KeyAlreadyExistsInDictError('({}, {})'.format(key, pointer.contents.value))
-        raise DictIsFullError
+        raise DictIsFullError('{}'.format(key))
 
     def find_position_of_inserted_key(self, key):
         position_generator = self._get_position_generator(key)
