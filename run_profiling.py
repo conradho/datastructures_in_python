@@ -14,7 +14,7 @@ if __name__ == '__main__':
     export_env = 'export PYTHONPATH=PYTHONPATH:{};'.format(project_dir)
 
     for file_path in args.file_paths:
-        if file_path[-3:] != '.py':
+        if file_path[-3:] != '.py' or file_path[-11:] == '__init__.py':
             continue
         subprocess.call(export_env + 'time python3.4 ' + file_path, shell=True)
         print('*' * 80, '\nRe-running with cProfile... ...')
