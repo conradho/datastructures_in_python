@@ -15,14 +15,15 @@ class SampleDictTest(unittest.TestCase):
         self.sample_dict = SampleDict()
         self.sample_dict.insert(b'a', 2)
 
-    def test_sample_dict_roughly_works(self):
+    def test_get_value_works(self):
         self.assertEqual(self.sample_dict.get_value(b'a'), 2)
 
+    def test_insert_works(self):
         self.sample_dict.insert(b'b', 3)
         self.assertEqual(self.sample_dict.get_value(b'b'), 3)
 
+    def test_pop_works(self):
         self.assertEqual(self.sample_dict.pop(b'a'), 2)
-        self.sample_dict.insert(b'a', 2)
 
     def test_errors_if_no_key(self):
         with self.assertRaises(KeyDoesNotExistInDictError):
