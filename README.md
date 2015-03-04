@@ -1,7 +1,7 @@
 Testing
 =======
 - run `python3.4 -m unittest` from the project root dir to check that all tests pass
-
+- run `python3.4 -m unittest discover -p tests/<your-test-file>` to test a single file
 
 Profiling
 =========
