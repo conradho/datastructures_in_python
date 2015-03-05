@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.4
 
+import argparse
 from functools import wraps
 import time
 
@@ -26,7 +27,7 @@ def insert_items_into_sample_dict():
             dictionary.insert(key, i)
 
 @get_time
-def insert_items_into_normal_dict():
+def insert_items_into_actual_python_dict():
     dictionary = {}
     def assign(key, value):
         if key in dictionary:
@@ -38,9 +39,13 @@ def insert_items_into_normal_dict():
             key = bytes(chr(i) + chr(j), 'UTF-8')
             assign(key, i)
 
-def main():
-    insert_items_into_sample_dict()
-    ## insert_items_into_normal_dict()
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='0 for python version vs 1 for own custom implementation')
+    parser.add_argument('implementation', type=int,
+                        help='0 for python; 1 for own implementation')
+    args = parser.parse_args()
+    if args.implementation == 1:
+        insert_items_into_sample_dict()
+    else:
+        insert_items_into_actual_python_dict()

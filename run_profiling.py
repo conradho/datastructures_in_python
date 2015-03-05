@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.4
 
 import argparse
+import shlex
 import subprocess
 import sys
 import os.path
@@ -16,14 +17,21 @@ if __name__ == '__main__':
     for file_path in args.file_paths:
         if file_path[-3:] != '.py' or file_path[-11:] == '__init__.py':
             continue
-        subprocess.call(export_env + 'time python3.4 ' + file_path, shell=True)
-        print('*' * 80, '\nRe-running with cProfile... ...')
-        output = subprocess.check_output(
-            export_env + 'python3.4 -m cProfile -s cumulative ' + file_path,
-            shell=True
+
+        time_command = 'bash -c "' + export_env + 'time python3.4 ' + file_path + ' {implementation}"'
+
+        cprofile_command = 'bash -c "{} python3.4 -m cProfile -s cumulative {} {{implementation}}"'.format(
+            export_env, file_path
         )
 
-        for line in output.decode('UTF-8').split('\n')[:20]:
-            print(line)
-        print('*' * 80)
+        for implementation in (0, 1):
+            subprocess.call(shlex.split(time_command.format(implementation=implementation)))
+            print('*' * 80, '\nRe-running with cProfile... ...')
+            print(shlex.split(cprofile_command))
+
+            output = subprocess.check_output(shlex.split(cprofile_command.format(implementation=implementation)))
+
+            for line in output.decode('UTF-8').split('\n')[:20]:
+                print(line)
+            print('*' * 80)
 
