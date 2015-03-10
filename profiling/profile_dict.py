@@ -3,6 +3,7 @@
 import argparse
 from functools import wraps
 import time
+import tracemalloc
 
 from datastructures.python_dict import SampleDict
 
@@ -10,6 +11,11 @@ def get_time(func):
     @wraps(func)
     def inner_function(*args, **kwargs):
         start_time = time.time()
+        snapshot = tracemalloc.take_snapshot()
+        top_stats = snapshot.statistics('lineno')
+        print("[ Top 10 Memory Usage ]")
+        for stat in top_stats[:10]:
+                print(stat)
         func(*args, **kwargs)
         seconds = time.time() - start_time
         print('{func_name} took {seconds}s'.format(
@@ -25,6 +31,11 @@ def insert_items_into_sample_dict():
         for j in range(1, 1000):
             key = bytes(chr(i) + chr(j), 'UTF-8')
             dictionary.insert(key, i)
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 10 Memory Usage ]")
+    for stat in top_stats[:10]:
+            print(stat)
 
 @get_time
 def insert_items_into_actual_python_dict():
@@ -38,6 +49,11 @@ def insert_items_into_actual_python_dict():
         for j in range(1, 1000):
             key = bytes(chr(i) + chr(j), 'UTF-8')
             assign(key, i)
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+    print("[ Top 10 Memory Usage ]")
+    for stat in top_stats[:10]:
+            print(stat)
 
 
 if __name__ == '__main__':
@@ -46,6 +62,10 @@ if __name__ == '__main__':
                         help='0 for python; 1 for own implementation')
     args = parser.parse_args()
     if args.implementation == 1:
-        insert_items_into_sample_dict()
-    else:
+        ## insert_items_into_sample_dict()
+        pass
+    elif args.implementation == 0:
+        ## inert_items_into_actual_python_dict()
+        pass
+    elif args.implementation == 10:
         insert_items_into_actual_python_dict()
